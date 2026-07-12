@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Least Squares Linear Regression</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Small styling touch-up for helper texts */
+        .helper-text {
+            display: block;
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Linear Regression Calculator</h1>
+        <p class="subtitle">Enter data points to compute the line of best fit using the Least Squares Method.</p>
+
+        {% if error %}
+            <div class="error-box">
+                <strong>{{ error }}</strong>
+            </div>
+        {% endif %}
+
+        <form method="POST" action="/">
+            <div class="input-container">
+                <label for="x_input">X Features (space-separated):</label>
+                <input 
+                    type="text" 
+                    id="x_input" 
+                    name="x_input" 
+                    value="{{ x_val }}" 
+                    placeholder="Enter numbers separated by spaces (e.g., 1 2 3 4 5)" 
+                    required
+                >
+                <span class="helper-text">Make sure to put spaces between each number! (Example: 1 2 3 4 5)</span>
+            </div>
+
+            <div class="input-container">
+                <label for="y_input">Y Target Values (space-separated):</label>
+                <input 
+                    type="text" 
+                    id="y_input" 
+                    name="y_input" 
+                    value="{{ y_val }}" 
+                    placeholder="Enter numbers separated by spaces (e.g., 2 3 5 4 6)" 
+                    required
+                >
+                <span class="helper-text">Must have the exact same count of numbers as X! (Example: 2 3 5 4 6)</span>
+            </div>
+
+            <div class="btn-row">
+                <button type="submit" name="action" value="submit" class="btn btn-primary">Submit</button>
+            </div>
+
+            {% if show_actions %}
+                <div class="results-box">
+                    <div class="equation-container">
+                        <h3>Regression Equation:</h3>
+                        <div class="equation">{{ equation }}</div>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <span class="metric-label">MAE</span>
+                            <span class="metric-value">{{ "%.4f"|format(mae) }}</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">MSE</span>
+                            <span class="metric-value">{{ "%.4f"|format(mse) }}</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">RMSE</span>
+                            <span class="metric-value">{{ "%.4f"|format(rmse) }}</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">R² Score</span>
+                            <span class="metric-value">{{ "%.4f"|format(r2) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-btn-row">
+                    <button type="submit" name="action" value="visualize" class="btn btn-success">Visualize</button>
+                    <button type="submit" name="action" value="reset" class="btn btn-danger">Reset</button>
+                </div>
+            {% endif %}
+        </form>
+
+        {% if plot_url %}
+            <div class="visualization-box">
+                <h2>Regression Line Plot</h2>
+                <img src="data:image/png;base64,{{ plot_url }}" alt="Linear Regression Visual Representation">
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
